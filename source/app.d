@@ -43,7 +43,7 @@ static this()
 {
     fileCommands["open"] = new Command((string path, Context context)
     {
-        auto file = cast(TilFile)context.peek();
+        auto file = cast(TilFile)context.pop();
         if (!file.handler.isOpen)
         {
             try

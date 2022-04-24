@@ -41,6 +41,22 @@ class TilFile : Item
 
 static this()
 {
+    fileCommands["open"] = new Command((string path, Context context)
+    {
+        auto file = cast(TilFile)context.peek();
+        if (!file.handler.isOpen)
+        {
+            try
+            {
+                file.open("r");
+            }
+            catch (ErrnoException ex)
+            {
+                return context.error(to!string(ex.message), ex.errno, "file");
+            }
+        }
+        return context;
+    });
     fileCommands["open.read"] = new Command((string path, Context context)
     {
         auto file = cast(TilFile)context.peek();

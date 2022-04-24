@@ -31,6 +31,7 @@ class TilFile : Item
         {
             handler.close();
         }
+        this.mode = "c";
     }
 
     override string toString()

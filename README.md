@@ -21,26 +21,26 @@ scope "try to read from the inexistent file" {
         print "on.error (2): $e / " <$e class>
         return
     }
-    with f [open.read $path]
-    read.lines $f | foreach line { print $line }
+    open.read $path | autoclose | as f
+    read.all $f | print
 }
 
-scope "write some lines into a new file" {
+scope "write some bytes into a new file" {
     print "open.write $path"
-    with f [open.write $path]
+    open.write $path | autoclose | as f
     print "f:$f"
     range 10 | foreach n { byte_vector $n | write $f }
 }
 
-scope "append some lines into file" {
+scope "append some bytes into file" {
     print "open.append $path"
-    with f [open.append $path]
+    open.append $path | autoclose | as f
     range 11 20 | foreach n { byte_vector $n | write $f }
 }
 
 scope "read the contents from file" {
     print "open.read $path"
-    with f [open.read $path]
+    open.read $path | autoclose | as f
     read.all $f | print "content:"
 }
 ```

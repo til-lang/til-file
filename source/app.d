@@ -98,7 +98,9 @@ static this()
     });
     fileCommands["seek"] = new Command((string path, Context context)
     {
-        // TODO
+        auto file = context.pop!TilFile();
+        auto position = context.pop!long();
+        file.handler.seek(position);
         return context;
     });
     fileCommands["write"] = new Command((string path, Context context)
@@ -106,7 +108,17 @@ static this()
         auto file = context.pop!TilFile();
         auto data = context.pop!ByteVector();
         file.handler.rawWrite(data.values);
-        // XXX: should we sync???
+        return context;
+    });
+    fileCommands["size"] = new Command((string path, Context context)
+    {
+        auto file = context.pop!TilFile();
+        return context.push(file.handler.size);
+    });
+    fileCommands["sync"] = new Command((string path, Context context)
+    {
+        auto file = context.pop!TilFile();
+        file.handler.sync();
         return context;
     });
     fileCommands["read.all"] = new Command((string path, Context context)
@@ -115,6 +127,13 @@ static this()
         auto size = file.handler.size;
         byte[] data = file.handler.rawRead(new byte[size]);
         return context.push(new ByteVector(data));
+    });
+    fileCommands["read.line"] = new Command((string path, Context context)
+    {
+        auto file = context.pop!TilFile();
+        auto size = file.handler.size;
+        string line = file.handler.readln();
+        return context.push(line);
     });
     fileCommands["close"] = new Command((string path, Context context)
     {

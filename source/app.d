@@ -118,7 +118,7 @@ static this()
     });
     fileCommands["close"] = new Command((string path, Context context)
     {
-        auto file = cast(TilFile)context.peek();
+        auto file = cast(TilFile)context.pop();
         file.close();
         return context;
     });

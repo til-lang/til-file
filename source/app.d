@@ -125,7 +125,16 @@ static this()
     {
         auto file = context.pop!TilFile();
         auto size = file.handler.size;
-        byte[] data = file.handler.rawRead(new byte[size]);
+        if (size == ulong.max)
+        {
+            size = 1024;
+        }
+        byte[] data;
+
+        while (!file.handler.eof)
+        {
+            data ~= file.handler.rawRead(new byte[size]);
+        }
         return context.push(new ByteVector(data));
     });
     fileCommands["read.line"] = new Command((string path, Context context)

@@ -8,6 +8,9 @@ dist/libtil_file.so: til source/app.d
 test:
 	TIL_PATH="$$PWD/dist" til run test.til
 
+debug:
+	TIL_PATH="$$PWD/dist" til debug test.til
+
 til:
 	git clone https://github.com/til-lang/til.git til
 

@@ -1,6 +1,7 @@
 import std.exception;
 import std.file : remove, FileException;
 import std.stdio;
+import std.string : stripRight;
 
 import til.nodes;
 
@@ -34,6 +35,37 @@ class TilFile : Item
         this.mode = "c";
     }
 
+    override Context next(Context context)
+    {
+        if (mode == "c")
+        {
+            return context.error(
+                "The file `" ~ path ~ "` is closed",
+                ErrorCode.RuntimeError,
+                "file"
+            );
+        }
+
+        if (handler.eof)
+        {
+            context.exitCode = ExitCode.Break;
+            return context;
+        }
+        else
+        {
+            context = this.runCommand("read.line", context);
+
+            if (handler.eof)
+            {
+                context.exitCode = ExitCode.Break;
+            }
+            else
+            {
+                context.exitCode = ExitCode.Continue;
+            }
+            return context;
+        }
+    }
     override string toString()
     {
         return path ~ " (" ~ mode ~ ")";
@@ -142,7 +174,7 @@ static this()
     {
         auto file = context.pop!TilFile();
         auto size = file.handler.size;
-        string line = file.handler.readln();
+        string line = file.handler.readln().stripRight("\n");
         return context.push(line);
     });
     fileCommands["close"] = new Command((string path, Context context)

@@ -170,6 +170,14 @@ static this()
         }
         return context.push(new ByteVector(data));
     });
+    fileCommands["read.some"] = new Command((string path, Context context)
+    {
+        auto file = context.pop!TilFile();
+        auto size = context.pop!long();
+
+        byte[] data = file.handler.rawRead(new byte[size]);
+        return context.push(new ByteVector(data));
+    });
     fileCommands["read.line"] = new Command((string path, Context context)
     {
         auto file = context.pop!TilFile();
